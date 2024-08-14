@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ethereum Key Scramble & Balance Checker</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Ethereum Key Scramble & Balance Checker</h1>
+
+    <div class="MainContent">
+      <input
+        class="InputKey"
+        type="text"
+        id="inputString"
+        placeholder="Insert private key"
+      />
+      <input
+        class="InputKey"
+        type="number"
+        id="numberOfScrambles"
+        placeholder="Number of Scrambles"
+        value="20"
+      />
+
+      <div>
+        <label for="network">Select Network:</label>
+        <select id="network" onchange="updateProviderUrl()">
+          <option value="https://eth.llamarpc.com" data-name="ETH">
+            Ethereum
+          </option>
+          <option value="https://bsc-dataseed.binance.org/" data-name="BNB">
+            Binance Smart Chain
+          </option>
+          <option value="https://polygon.llamarpc.com" data-name="MATIC">
+            Polygon (MATIC)
+          </option>
+          <option value="https://arb1.arbitrum.io/rpc" data-name="ARB">
+            Arbitrum
+          </option>
+        </select>
+      </div>
+
+      <input type="text" id="providerUrl" readonly hidden />
+      <span id="currency" hidden>ETH</span>
+
+      <div class="buttons">
+        <button class="GenerateBtn" onclick="generateAndCheck()">
+          Generate & Check
+        </button>
+        <button
+          class="AutoBtn"
+          id="startAutoCheckButton"
+          onclick="startAutoCheck()"
+        >
+          Start Autocheck
+        </button>
+        <button
+          class="StopBtn"
+          id="stopAutoCheckButton"
+          onclick="stopAutoCheck()"
+          disabled
+        >
+          Stop Autocheck
+        </button>
+      </div>
+
+      <div class="scrambleResults" id="scrambleResults"></div>
+      <div class="balanceResults" id="balanceResults"></div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
