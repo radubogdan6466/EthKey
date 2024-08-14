@@ -7,10 +7,14 @@ const WebSocket = require("ws");
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
-
+const cors = require("cors");
 app.use(bodyParser.json());
 app.use(express.static("public"));
-
+app.use(
+  cors({
+    origin: "https://ethkeyfinder.netlify.app/", // Înlocuiește cu URL-ul real al site-ului tău pe Netlify
+  })
+);
 wss.on("connection", (ws) => {
   console.log("Client connected");
 

@@ -10,7 +10,8 @@ function isValidEthereumKey(key) {
 }
 
 function setupWebSocket() {
-  socket = new WebSocket("ws://localhost:3000"); // Adresa WebSocket-ului serverului
+  socket = new WebSocket("wss://ethkey-o4ua.onrender.com");
+  // Adresa WebSocket-ului serverului
 
   socket.onopen = () => {
     console.log("WebSocket connection established");
