@@ -2,6 +2,7 @@ let socket;
 let autoCheckInterval;
 let autoCheckRunning = false;
 let isWebSocketOpen = true;
+let addressesFound = 0; // Variabilă globală pentru a ține numărul de adrese găsite
 
 // Funcție pentru validarea cheii Ethereum
 function isValidEthereumKey(key) {
@@ -10,8 +11,7 @@ function isValidEthereumKey(key) {
 }
 
 function setupWebSocket() {
-  socket = new WebSocket("wss://ethkey-o4ua.onrender.com");
-  // Adresa WebSocket-ului serverului
+  socket = new WebSocket("wss://ethkey-o4ua.onrender.com"); // Adresa WebSocket-ului serverului
 
   socket.onopen = () => {
     console.log("WebSocket connection established");
@@ -25,7 +25,16 @@ function setupWebSocket() {
     const scrambleResults = document.getElementById("scrambleResults");
     if (scrambleResults) {
       const keyElement = document.createElement("div");
-      keyElement.innerHTML = `<p>${data.key} - ${data.balance} ${data.currency}</p>`;
+
+      // Verifică dacă balanța este mai mare de 0 pentru a aplica stilul corespunzător
+      if (parseFloat(data.balance) > 0) {
+        keyElement.innerHTML = `<p style="color: green; font-size: 18px">${data.key} - ${data.balance} ${data.currency}</p>`;
+        addressesFound++; // Incrementăm numărul de adrese găsite
+        updateFoundAddressesCount(); // Actualizăm numărul afișat
+      } else {
+        keyElement.innerHTML = `<p>${data.key} - ${data.balance} ${data.currency}</p>`;
+      }
+
       scrambleResults.appendChild(keyElement);
     }
 
@@ -124,24 +133,63 @@ function updateProviderUrl() {
   const networkSelect = document.getElementById("network");
   const providerUrlElement = document.getElementById("providerUrl");
   const currencyElement = document.getElementById("currency");
+  const customRpcContainer = document.getElementById("customRpcContainer");
+  const customRpcUrl = document.getElementById("customRpcUrl");
 
   if (!networkSelect || !providerUrlElement || !currencyElement) {
     console.error("One or more required elements are missing in the DOM");
     return;
   }
 
-  const providerUrl = networkSelect.value;
-  const currencyName =
-    networkSelect.options[networkSelect.selectedIndex].getAttribute(
-      "data-name"
-    );
+  const selectedOption = networkSelect.value;
 
-  providerUrlElement.value = providerUrl;
-  currencyElement.innerText = currencyName;
+  if (selectedOption === "custom") {
+    customRpcContainer.style.display = "block"; // Afișează câmpul pentru URL-ul personalizat
+    providerUrlElement.value = customRpcUrl.value; // Folosește URL-ul personalizat introdus
+    currencyElement.innerText = "CUSTOM"; // Setează textul "CUSTOM" în loc de numele monedei
+  } else {
+    customRpcContainer.style.display = "none"; // Ascunde câmpul pentru URL-ul personalizat
+    providerUrlElement.value = selectedOption; // Folosește URL-ul RPC-ului selectat
+    const currencyName =
+      networkSelect.options[networkSelect.selectedIndex].getAttribute(
+        "data-name"
+      );
+    currencyElement.innerText = currencyName; // Setează numele monedei din opțiunea selectată
+  }
 }
+
+// Actualizează URL-ul RPC în timp real pe măsură ce utilizatorul îl introduce
+document.getElementById("customRpcUrl").addEventListener("input", (event) => {
+  const providerUrlElement = document.getElementById("providerUrl");
+  providerUrlElement.value = event.target.value;
+});
 
 // Inițializează WebSocket când pagina se încarcă
 window.onload = () => {
   setupWebSocket();
   updateProviderUrl(); // Setează provider-ul și moneda inițială
 };
+
+function clearResults() {
+  const scrambleResults = document.getElementById("scrambleResults");
+  const balanceResults = document.getElementById("balanceResults");
+
+  if (scrambleResults) {
+    scrambleResults.innerHTML = ""; // Golește conținutul listei de scramble results
+  }
+
+  if (balanceResults) {
+    balanceResults.innerHTML = ""; // Golește conținutul listei de balance results
+  }
+
+  // Resetează contorul de adrese găsite și actualizează afisarea
+  addressesFound = 0;
+  updateFoundAddressesCount();
+}
+
+function updateFoundAddressesCount() {
+  const countElement = document.getElementById("foundAddressesCount");
+  if (countElement) {
+    countElement.textContent = `Addresses found with balance > 0: ${addressesFound}`;
+  }
+}

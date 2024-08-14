@@ -27,7 +27,7 @@
       <div>
         <label for="network">Select Network:</label>
         <select id="network" onchange="updateProviderUrl()">
-          <option value="https://eth.llamarpc.com" data-name="ETH">
+          <option value="https://ethereum-rpc.publicnode.com" data-name="ETH">
             Ethereum
           </option>
           <option value="https://bsc-dataseed.binance.org/" data-name="BNB">
@@ -39,11 +39,24 @@
           <option value="https://arb1.arbitrum.io/rpc" data-name="ARB">
             Arbitrum
           </option>
+          <option value="custom" data-name="CUSTOM">Custom RPC</option>
+          <!-- Adaugă această opțiune -->
         </select>
+      </div>
+
+      <!-- Câmp pentru URL-ul RPC personalizat, ascuns inițial -->
+      <div id="customRpcContainer" style="display: none">
+        <label for="customRpcUrl">Custom RPC URL:</label>
+        <input
+          type="text"
+          id="customRpcUrl"
+          placeholder="Enter custom RPC URL"
+        />
       </div>
 
       <input type="text" id="providerUrl" readonly hidden />
       <span id="currency" hidden>ETH</span>
+      <p id="foundAddressesCount">Addresses found:</p>
 
       <div class="buttons">
         <button class="GenerateBtn" onclick="generateAndCheck()">
@@ -56,6 +69,7 @@
         >
           Start Autocheck
         </button>
+
         <button
           class="StopBtn"
           id="stopAutoCheckButton"
@@ -68,6 +82,7 @@
 
       <div class="scrambleResults" id="scrambleResults"></div>
       <div class="balanceResults" id="balanceResults"></div>
+      <button class="ClearBtn" onclick="clearResults()">Clear Results</button>
     </div>
 
     <script src="app.js"></script>
