@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(express.static("public"));
 app.use(
   cors({
-    origin: "https://liwallet.xyz/", // Înlocuiește cu URL-ul real al site-ului tău pe Netlify
+    origin: "http://localhost:3000", // Înlocuiește cu URL-ul aplicației tale locale
   })
 );
 wss.on("connection", (ws) => {
